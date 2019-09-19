@@ -1,7 +1,7 @@
 let profiles = [];
 
 module.exports = {
-  profile: (message, data, filename, linenumber, log, status, resource, user, userType) => {
+  profile: (message, data, filename, linenumber, log, scene, status, resource, user, userType) => {
     if(process.env.NODE_ENV == "development"){
       profiles.push({message, data, filename, linenumber});
     }
@@ -9,7 +9,8 @@ module.exports = {
     if(log){
       let logData = typeof data === 'object' ? JSON.stringify(data): data, logResource = typeof resource === 'object' ? JSON.stringify(resource): resource;
       var numbers = linenumber.match(/\d+/g).map(Number);
-      process.workerQueue.doLog(status, message, logData, logResource, user, userType, filename, numbers.length>0?numbers[0]:-1);
+
+      process.workerQueue.doLog({scene: scene, status: status, userId: user, userType: userType, title: message, message: logData, filePath: filename, lineNumber: numbers.length>0?numbers[0]:-1});
     }
   },
   reset: () => {
