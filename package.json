@@ -1,18 +1,26 @@
 {
-  "name": "libs",
+  "name": "nginelibs",
   "version": "1.0.0",
-  "description": "",
+  "description": "Ngine Library",
   "main": "index.js",
   "scripts": {
     "test": "mocha --require babel-register test/*.js --exit"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "npm",
+    "npm-nginelibs"
+  ],
+  "author": "Juniawan Sukrama",
   "license": "ISC",
   "devDependencies": {
     "babel-register": "^6.26.0",
     "chai": "^4.2.0",
     "mocha": "^6.2.0",
     "supertest": "^4.0.2"
+  },
+  "dependencies": {
+    "accounting": "^0.4.1",
+    "amqplib": "^0.5.5",
+    "i18n": "^0.8.3"
   }
 }
