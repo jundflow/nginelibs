@@ -3,6 +3,10 @@ class MsgBroker{
     this.broker = broker;
   }
 
+  getBroker(){
+    return this.broker;
+  }
+
   async pushEvent(channel, data, cb){
     this.broker.createChannel().then(ch => {
       const ok = ch.assertQueue(channel, { durable: false });
