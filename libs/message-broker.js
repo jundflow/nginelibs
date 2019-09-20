@@ -17,6 +17,8 @@ class MsgBroker{
     }).then(function(ch){
       if(typeof cb !== "undefined"){
         cb(null, ch.close());
+      }else{
+        ch.close();
       }
     }).catch(err => {
       if(typeof cb !== "undefined"){
