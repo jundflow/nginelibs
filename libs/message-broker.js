@@ -25,6 +25,7 @@ class MsgBroker{
         ch.close();
       }
     }).catch(err => {
+      console.log("Error", err);
       if(typeof cb !== "undefined"){
         cb(err, null);
       }else{
