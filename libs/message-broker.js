@@ -9,12 +9,16 @@ class MsgBroker{
 
   async pushEvent(channel, data, cb){
     this.broker.then(function(conn) {
+      console.log("channel create");
       return conn.createChannel();
     }).then(function(ch) {
+      console.log("start asset queue");
       return ch.assertQueue(channel, { durable: false }).then(function(ok) {
+        console.log("start send queue");
         return ch.sendToQueue(channel, Buffer.from(JSON.stringify({data})));
       });
     }).then(function(ch){
+      console.log("Ch result", ch);
       if(typeof cb !== "undefined"){
         cb(null, ch.close());
       }else{
