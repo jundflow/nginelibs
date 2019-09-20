@@ -10,7 +10,7 @@ module.exports = {
       let logData = typeof data === 'object' ? JSON.stringify(data): data, logResource = typeof resource === 'object' ? JSON.stringify(resource): resource;
       var numbers = linenumber.match(/\d+/g).map(Number);
 
-      process.workerQueue.doLog({scene: scene, status: status, userId: user, userType: userType, title: message, message: logData, filePath: filename, lineNumber: numbers.length>0?numbers[0]:-1});
+      process.workerQueue.doLog({scene: scene, status: status, userId: (user?user.id:null), userName: (user?user.fullName:null), userType: userType, title: message, message: logData, filePath: filename, lineNumber: numbers.length>0?numbers[0]:-1});
     }
   },
   reset: () => {
