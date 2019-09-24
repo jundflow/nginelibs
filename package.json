@@ -1,6 +1,6 @@
 {
   "name": "nginelibs",
-  "version": "1.0.7",
+  "version": "1.0.7.1",
   "description": "Ngine Library",
   "main": "index.js",
   "scripts": {
