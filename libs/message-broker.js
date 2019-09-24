@@ -1,65 +1,53 @@
 class MsgBroker{
-  constructor(channel){
-    this.channel = channel;
-  }
+  constructor(){
+    this.channel = {}
+    this.channelKey = {
+      sendMail: 'send-mail',
+      fetchConfig: 'fetch-config',
+      pushNotification: 'push-notification',
+      errorLog: 'error-log',
+      activityLog: 'activity-log'
+    }
+    let dt = this;
 
-  getChannel(){
-    return this.channel;
-  }
-
-  async pushEvent(channel, data, cb){
-    console.log("Start push event");
-    this.channel.assertQueue(channel, { durable: false }).then(function(ok){
-      return ch.sendToQueue(channel, Buffer.from(JSON.stringify({data})));
-    }).then(function(res){
-      console.log("Ch result", res);
-      if(typeof cb !== "undefined"){
-        cb(null, res);
+    require('amqplib/callback_api')
+    .connect('amqp://localhost', function(err, conn) {
+      if (err != null){
+        console.error(err);
+        process.exit(1);
       }
-    }).catch(function(err){
-      throw new Error(err);
-    })
 
-
-
-    // this.broker.createChannel().then(ch => {
-    //   const ok = ch.assertQueue(channel, { durable: false });
-    //   ok.then(() => {
-    //     ch.sendToQueue(channel, Buffer.from(JSON.stringify({data})));
-        
-    //     if(typeof cb !== "undefined"){
-    //       cb(null, ch.close());
-    //     }
-    //   }).catch(err => {
-    //     if(typeof cb !== "undefined"){
-    //       cb(err, null);
-    //     }else{
-    //       console.log(err);
-    //     }
-    //   })
-    // }).catch(err => {
-    //   if(typeof cb !== "undefined"){
-    //     cb(err, null);
-    //   }else{
-    //     console.log(err);
-    //   }
-    // })
+      conn.createChannel(function(err, ch){
+        if (err != null){
+          console.log(err)
+          process.exit(1);
+        }else{
+          ['send-mail', 'fetch-config', 'push-notification', 'error-log', 'activity-log'].map(key => {
+            ch.assertQueue(key);
+          });
+          dt.channel = ch;
+        }
+      });
+    });
   }
 
-  async sendInfo(data, cb){
-    this.pushEvent(process.constantVar.emmitCode.info,data, cb);
+  pushEvent(emmitCode, data, cb){
+    this.channel.sendToQueue(emmitCode, Buffer.from(JSON.stringify(data)), {}, cb);
   }
-  async sendMail(template, content, cb){
-    this.pushEvent(process.constantVar.emmitCode.mailer,{template, content}, cb);
+  sendMail(template, content, cb){
+    this.pushEvent('send-mail',{template, content}, cb);
   }
-  async doLog(content, cb){
-    this.pushEvent(process.constantVar.emmitCode.log,{content}, cb);
+  errorLog(scene, title, message, filePath, lineNumber, data, cb){
+    this.pushEvent('error-log',{scene, title, message, filePath, lineNumber, data}, cb);
   }
-  async sendNotification(content, cb){
-    this.pushEvent(process.constantVar.emmitCode.notification, {content}, cb);
+  activityLog(scene, status, title, userId, userName, userType, data, cb){
+    this.pushEvent('activity-log',{scene, status, title, userId, userName, userType, data}, cb);
   }
-  async fetchConfig(cb){
-    this.pushEvent(process.constantVar.emmitCode.fetchConfig, null, cb);
+  sendNotification(content, cb){
+    this.pushEvent('push-notification', content, cb);
+  }
+  fetchConfig(cb){
+    this.pushEvent('fetch-config', null, cb);
   }
 }
 

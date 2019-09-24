@@ -1,7 +1,7 @@
 const i18n = require("i18n")
 
 class responseJson{
-  constructor(res){
+  constructor(res, profiler){
     this.res = res;
     this.id = null;
     this.success = true;
@@ -11,6 +11,10 @@ class responseJson{
     this.status = 200;
     this.relogin = false;
     this.customKey = {};
+    this.profiler = null;
+    if(profiler){
+      this.profiler = profiler;
+    }
   }
 
   setId(id){
@@ -135,10 +139,12 @@ class responseJson{
         })
       }
 
-      process.profiler.profile("Response sent", {status: this.status, response: res}, __filename, (new Error(1).stack).split("at ")[1].split(":")[2])
-      if(process.profiler){
-          process.profiler.render();
-          process.profiler.reset();
+      if(this.profiler){
+        this.profiler.profile("Response sent", {status: this.status, response: res}, __filename, (new Error(1).stack).split("at ")[1].split(":")[2])
+        if(this.profiler){
+            this.profiler.render();
+            this.profiler.reset();
+        }
       }
       this.res.status(this.status).json(res)
     }

@@ -1,6 +1,6 @@
 {
   "name": "nginelibs",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Ngine Library",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,6 @@
     "supertest": "^4.0.2"
   },
   "dependencies": {
-    "accounting": "^0.4.1",
     "amqplib": "^0.5.5",
     "i18n": "^0.8.3"
   }
